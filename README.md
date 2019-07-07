@@ -5,12 +5,16 @@
 1. Download `Raspbian lite` from [here](https://downloads.raspberrypi.org/raspbian_lite/images/), look for most recent image –– unzip file
 
 1. Use `balena Etcher` to write Raspbian image to SD card, to install it on a Mac:
-   ```$> brew cask install balenaetcher```
+   ```
+   $> brew cask install balenaetcher
+   ```
 
 1. Mount SD card (i.e., eject + re-injet SD card)
 
-1. Create `/boot/ssh` file to allow SSH
-   ```$> touch /Volumes/boot/ssh```
+1. Create `/boot/ssh` file to allow SSH on RPi
+   ```
+   $> touch /Volumes/boot/ssh
+   ```
 
 1. Append IP settings to end of `/boot/cmdline.txt` file to set static IP
    ``` ip=192.168.136.XX::192.168.136.1:255.255.255.0:eth0:false```
@@ -47,7 +51,7 @@ See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet
    $> ansible-playbook playbooks/reset_pi_password.yml
    ```
 
-1. Ensure you can still ssh to the RPi cluster, see sample `~/.ssh/config` excerpt below
+1. Ensure you can ssh to the RPi cluster, see sample `~/.ssh/config` excerpt below
    ```
    Host 192.168.136.2*
         User pi
@@ -72,8 +76,8 @@ See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet
 
 
 ## Oh god, why?!?
-Kubernetes is all the rage these days but it's bloated `as f*ck!`. I've had a small cluster of Raspberry Pis that I've used for all sorts of shenanigans (even trying to install Kubernetes on them :facepalm:) and ever since I've heard that the `Rancher` guys managed to slashed the bejesus out of `k8s` it was just a matter of time before these puppies were going to be repurposed (once again!?!).
+Kubernetes is all the rage these days but it's bloated `as hell!` :scream:. I've had a small cluster of Raspberry Pis that I've used for all sorts of shenanigans (even trying to install Kubernetes on them :see_no_evil:) and ever since I've heard that the `Rancher` guys managed to slash the bejesus out of `k8s` it was just a matter of time before these puppies were going to be repurposed (once again!?! :flushed:).
 
-Performance is great and what better way to get k8s in every IOT device in the world.
+Performance is great and what better way to get k8s in every IOT device in the world!
 
-Next stop... getting rid of the OS altogether and running bare `k3os` on these RPis.
+Next stop... getting rid of the OS altogether and running bare `k3os` on these RPis. :smirk:
