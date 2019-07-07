@@ -1,0 +1,7 @@
+.DS_Store
+*.retry
+**/.DS_Store
+cachedir/*
+!cachedir/.gitkeep
+logs/*
+!logs/.gitkeep

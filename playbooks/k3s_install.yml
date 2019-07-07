@@ -1,0 +1,134 @@
+---
+#
+#  Prep k3s hosts
+#
+- name: Prepare RPis for k3s
+  hosts: k3s
+  become: yes
+
+  tasks:
+  - name: Check for "cgroup_enable=cpuset" in cmdline.txt
+    shell: grep -c 'cgroup_enable=cpuset' /boot/cmdline.txt || true
+    changed_when: false
+    register: cgroup_enable_cpuset
+
+  - name: Check for "cgroup_memory=1" in cmdline.txt
+    shell: grep -c 'cgroup_memory=1' /boot/cmdline.txt || true
+    changed_when: false
+    register: cgroup_memory
+
+  - name: Check for "cgroup_enable=memory" in cmdline.txt
+    shell: grep -c 'cgroup_enable=memory' /boot/cmdline.txt || true
+    changed_when: false
+    register: cgroup_enable_memory
+
+  - name: If missing, add "cgroup_enable=cpuset" to EOL
+    replace:
+      dest: /boot/cmdline.txt
+      regexp: '(\s+)$'
+      replace: ' cgroup_enable=cpuset '
+    when: cgroup_enable_cpuset.stdout == "0"
+
+  - name: If missing, add "cgroup_memory=1" to EOL
+    replace:
+      dest: /boot/cmdline.txt
+      regexp: '(\s+)$'
+      replace: ' cgroup_memory=1 '
+    when: cgroup_memory.stdout == "0"
+
+  - name: If missing, add "cgroup_enable=memory" to EOL
+    replace:
+      dest: /boot/cmdline.txt
+      regexp: '(\s+)$'
+      replace: ' cgroup_enable=memory '
+    when: cgroup_enable_memory.stdout == "0"
+
+  - name: Reboot RPis if cmdline.txt changed
+    block:
+
+    - name: Rebooting boxes
+      shell: >
+        sleep 5; shutdown -r now 'Rebooting to complete system upgrade'
+      ignore_errors: true
+      async: 5
+      poll: 0
+      changed_when: false
+
+    - name: Waiting for boxes to come back
+      wait_for_connection:
+        connect_timeout: 20
+        sleep: 5
+        delay: 5
+        timeout: 300
+
+    when: cgroup_enable_cpuset.stdout == "0" or cgroup_memory.stdout == "0" or cgroup_enable_memory.stdout == "0"
+
+  - name: Download K3S install script
+    get_url:
+      url: https://get.k3s.io
+      dest: ~/install_k3s.sh
+      mode: '0755'
+
+#
+#  Configure Master
+#
+- name: Configure k3s master
+  hosts: k3s_master
+  become: yes
+
+  tasks:
+  - name: Install k3s master
+    shell: ~/install_k3s.sh
+    args:
+      creates: /var/lib/rancher/k3s
+      warn: false
+
+  - name: Wait for token file
+    wait_for:
+      path: /var/lib/rancher/k3s/server/node-token
+
+  - name: Fetch contents of token file
+    slurp:
+      src: /var/lib/rancher/k3s/server/node-token
+    register: k3s_token_file
+
+  - name: Set k3s master token
+    set_fact:
+      k3s_token: "{{ k3s_token_file['content'] | b64decode | regex_replace('\n') }}"
+
+  - name: Ensure k3s master starts on boot
+    systemd:
+      name: k3s
+      state: started
+      enabled: yes
+      daemon_reload: yes
+
+  - name: Wait for port 6443 to become online before registering agents
+    wait_for:
+      port: 6443
+      delay: 10
+
+#
+#  Configure Agents (one at the time)
+#
+- name: Configure k3s agents
+  hosts: k3s_agent
+  serial: 1
+  become: yes
+
+  tasks:
+  - name: Install k3s agents
+    shell: ~/install_k3s.sh
+    args:
+      creates: /var/lib/rancher/k3s
+      warn: false
+    environment:
+      K3S_TOKEN: "{{ hostvars['rpi0']['k3s_token'] }}"
+      K3S_URL: "https://{{ hostvars['rpi0']['ansible_host'] }}:6443"
+
+  - name: Ensure k3s agent starts on boot
+    systemd:
+      name: k3s-agent
+      state: started
+      enabled: yes
+      daemon_reload: yes

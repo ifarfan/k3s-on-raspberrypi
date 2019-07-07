@@ -1,2 +1,79 @@
-# k3s-on-raspberrypi
-Stand up a k3s cluster on a bunch of raspberry pis
+# `K3S` installation on `Raspberry Pi` cluster
+
+
+## Pre-requisites
+1. Download `Raspbian lite` from [here](https://downloads.raspberrypi.org/raspbian_lite/images/), look for most recent image –– unzip file
+
+1. Use `balena Etcher` to write Raspbian image to SD card, to install it on a Mac:
+   ```$> brew cask install balenaetcher```
+
+1. Mount SD card (i.e., eject + re-injet SD card)
+
+1. Create `/boot/ssh` file to allow SSH
+   ```$> touch /Volumes/boot/ssh```
+
+1. Append IP settings to end of `/boot/cmdline.txt` file to set static IP
+   ``` ip=192.168.136.XX::192.168.136.1:255.255.255.0:eth0:false```
+   Refer to [this page](https://kr15h.github.io/RPi-Setup/) for an explanation + format
+
+1. Unmount + eject SD card, pop it in a Raspberry-pi and boot
+
+1. On first boot, login as `pi` and use `raspberry` as default password
+   ```
+   $> ssh pi@192.168.136.23
+   ```
+1. Rejoice + enjoy!
+
+
+## Cluster Specs
+My cluster's current configuration specs:
+
+| Model         | IP             | Proc   | CPU | Mem   | Disk |
+| ------------- | -------------- | ------ | --- | ----- | ---- |
+| RPI 3 Model B | 192.168.136.20 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.21 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.22 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.23 | armv7l |  4  | 1GB   | 32GB |
+| RPI Model B+  | 192.168.136.24 | armv6l |  1  | 512MB |  8GB |
+
+See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet/JiveServlet/previewBody/82195-102-3-346675/PiPoster_14Jun16.pdf)
+
+
+## Installation + configuration via Ansible
+1. Check for correct IP settings under `hosts.yml`, note that the master is tagged as `k3s_master` and the agents as `k3s_agent`
+
+1. Reset `pi` user's password and add Ansible ssh key (you'll be prompted for default password and the ssh key under `vars/main.yml > ansible_ssh_key` will be added)
+   ```
+   $> ansible-playbook playbooks/reset_pi_password.yml
+   ```
+
+1. Ensure you can still ssh to the RPi cluster, see sample `~/.ssh/config` excerpt below
+   ```
+   Host 192.168.136.2*
+        User pi
+        IdentityFile ~/.ssh/ansible_rsa
+        IdentitiesOnly yes
+        PasswordAuthentication no
+        StrictHostKeyChecking no
+        UserKnownHostsFile=/dev/null
+        ControlMaster auto
+        ControlPath /tmp/%r@%h:%p
+        LogLevel FATAL
+   ```
+
+1. Configure default RPis host settings (using your ssh key from now on)
+   ```
+   $> ansible-playbook playbooks/configure_host.yml
+   ```
+1. Install k3s on all RPis (1 master + 3 agents)
+   ```
+   $> ansible-playbook playbooks/k3s_install.yml
+   ```
+
+
+## Oh god, why?!?
+Kubernetes is all the rage these days but it's bloated `as f*ck!`. I've had a small cluster of Raspberry Pis that I've used for all sorts of shenanigans (even trying to install Kubernetes on them :facepalm:) and ever since I've heard that the `Rancher` guys managed to slashed the bejesus out of `k8s` it was just a matter of time before these puppies were going to be repurposed (once again!?!).
+
+Performance is great and what better way to get k8s in every IOT device in the world.
+
+Next stop... getting rid of the OS altogether and running bare `k3os` on these RPis.

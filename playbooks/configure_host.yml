@@ -1,0 +1,82 @@
+---
+#
+#  Configure RPi hosts
+#
+- name: 1st time host configuration
+  hosts: pis
+  become: yes
+  serial: 1
+  vars_files:
+  - ../vars/main.yml
+
+  tasks:
+  - name: Update apt caches
+    apt:
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+
+  - name: Install default packages
+    apt:
+      pkg: "{{ apt_pkgs_to_install }}"
+      state: present
+
+  - name: Set global aliases
+    copy:
+      dest: /etc/profile.d/10-aliases.sh
+      content: |
+        #
+        #  Global aliases
+        #
+        {{ aliases }}
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Set global prompt
+    copy:
+      dest: /etc/profile.d/10-prompt.sh
+      content: |
+        #
+        #  Global Bash Prompt
+        #
+        export PS1='\[\033[1;32m\]\u\[\033[0m\]@\[\033[1;30m\]\H\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Set timezone
+    timezone:
+      name: UTC
+
+  - name: Set hostname
+    hostname:
+      name: "{{ inventory_hostname }}"
+
+  - name: Set hostname in /etc/hosts
+    blockinfile:
+      path: /etc/hosts
+      insertbefore: EOF
+      marker: "#-- {mark} ANSIBLE MANAGED HOSTNAME --"
+      content: |
+        127.0.0.1 {{ inventory_hostname }}
+
+  - name: Set global prompt
+    blockinfile:
+      path: /boot/config.txt
+      insertbefore: EOF
+      marker: "#-- {mark} ANSIBLE MANAGED HOSTNAME --"
+      content: |
+        #  Set GPU memory to minimum possible
+        gpu_mem = 16
+
+  - name: Remove packages off the cache
+    apt:
+      autoclean: yes
+
+  - name: Remove dependencies no longer needed
+    apt:
+      autoremove: yes

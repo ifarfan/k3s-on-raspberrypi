@@ -1,0 +1,116 @@
+---
+#
+#  Global Vars
+#
+# yamllint disable rule:line-length
+ansible_ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCNaVP0USq5F3TYVQ6JKdwJzrbXwgg2Wvod2nKDM+T0dBsiI0jjrFEnYQoyawyUt8yQgQ2gx2PBnbwP/UTnpT1LKiwKG1Lqc3N5WAqJTf3Ih+H9i5QWL/9Nzjcnl6zT6LklegqOtv8pHzBcwpTUXKiwXO0Q3K38hgLJq4LVvrfpONalwTipWFak1h001VW3y/FCio7JWbuD7XCE5NSxSBRbzzIYvxm6cukbn4b3e1/lDH66IgliopPg9v0yS1nJmtUWUWPdXzmvJmPDOYDBm7o5vbyhQkcGJA9sf/PD+nrkUduD0UY9HaCImj+waIdD6S8h4CWnNzrrq3OuKvvGVSN9tU2mmeBCPPq8sYc3V8V8uz5MXvT/w/FtChby5Fg5rES/k1sRkMhb7LHRe/p8HBBI2EDanfUIxv8yVZ00JegoGlvbVCffbFl2rTdcl7eyKMDlaiVjC9sH1pAXRcZuA7psVao5TKIHYc6ohzUgZ7m7jfmEV1BZHBW6MDkXeMSh2v94vCKkzC+LQmwzoxnW0CnmUvEQ/CvOe0oxiVOJpM4I12gKB/VhIJ/uHBrZJ4taywcx54hrZCDYXhy2FH4wxQHbG7BclXE2tv1ceOtoGCqsQTXTcObjDOx6JXfuP45piNY85USIDSKKufmCTi1rb1YVbqZQqOXXtjLq0Yo2XEbiQ== ansible@local
+# yamllint enable rule:line-length
+
+#
+#  APT settings
+#
+apt_cache_time: 1800
+apt_pkgs_to_install:
+- aptitude
+- curl
+- grc
+- htop
+# - iftop
+# - iotop
+# - iptraf
+# - lnav
+- lsof
+- locate
+- multitail
+- nano
+- ncdu
+- nmap
+- tar
+- tree
+- unzip
+- wget
+- zip
+
+aliases: |
+  alias ..='cd ../'
+  alias ...='cd ../../'
+  alias .2='cd ../../'
+  alias .3='cd ../../../'
+  alias .4='cd ../../../../'
+  alias .5='cd ../../../../../'
+  alias .6='cd ../../../../../../'
+  alias blkid='colourify blkid'
+  alias c=clear
+  alias cd..='cd ../'
+  alias colourify='/usr/bin/grc -es --colour=auto'
+  alias configure='colourify ./configure'
+  alias cp='cp -iv'
+  alias d='dirs -v'
+  alias df='colourify df'
+  alias diff='colourify diff'
+  alias diffu='diff --unified'
+  alias dig='colourify dig'
+  alias docker='colourify docker'
+  alias docker-machine='colourify docker-machine'
+  alias du='colourify du'
+  alias egrep='egrep --color=auto'
+  alias env='colourify env'
+  alias fdisk='colourify fdisk'
+  alias fgrep='fgrep --color=auto'
+  alias findmnt='colourify findmnt'
+  alias fix_stty='stty sane'
+  alias free='colourify free'
+  alias g=git
+  alias get='curl --continue-at - --location --progress-bar --remote-name --remote-time'
+  alias grep='grep --color=auto'
+  alias hd='od -Ax -tx1z -v'
+  alias head='colourify head'
+  alias history-stat='history | awk '\''{print $2}'\'' | sort | uniq -c | sort -n -r | head'
+  alias http-serve='python3 -m http.server'
+  alias id='colourify id'
+  alias ifconfig='colourify ifconfig'
+  alias ip='colourify ip'
+  alias iptables='colourify iptables'
+  alias l='ls -1A'
+  alias la='ll -A'
+  alias lc='lt -c'
+  alias ld='colourify ld'
+  alias less='less -FSRXc'
+  alias lk='ll -Sr'
+  alias ll='ls -FGlAhp'
+  alias lm='la | "$PAGER"'
+  alias ln=lni
+  alias lr='ll -R'
+  alias ls='ls --color=auto'
+  alias lsblk='colourify lsblk'
+  alias lsof='colourify lsof'
+  alias lt='ll -tr'
+  alias lu='lt -u'
+  alias lx='ll -XB'
+  alias make='colourify make'
+  alias mkdir='mkdir -pv'
+  alias mount='colourify mount'
+  alias mv='mv -iv'
+  alias my_ip='dig +short myip.opendns.com @resolver1.opendns.com'
+  alias netstat='colourify netstat'
+  alias path='echo -e ${PATH//:/\\n}'
+  alias pgcli='PAGER=''grcat ~/.grcat | less -iMSx4FXRe'' pgcli'
+  alias ping='colourify ping'
+  alias po=popd
+  alias ps='colourify ps'
+  alias psc='ps xao pid,state,user,args'
+  alias pu=pushd
+  alias py=python
+  alias rrsync='rsync --rsync-path sudo\ rsync --recursive --perms --copy-links --verbose --compress --rsh=ssh'
+  alias run-help=man
+  alias sa='alias | grep -i'
+  alias show_options=shopt
+  alias sl=ls
+  alias sudo='sudo '
+  alias sum='xargs | tr '' '' ''+'' | bc'
+  alias tail='colourify tail'
+  alias traceroute='colourify traceroute'
+  alias traceroute6='colourify traceroute6'
+  alias type='type -a'
+  # alias vi='vim -p'
+  alias '~'='cd ~'
