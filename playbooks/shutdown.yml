@@ -1,0 +1,19 @@
+---
+#
+#  Shutdown RPis
+#
+- name: Shutdown RPi boxes
+  hosts: pis
+  become: yes
+
+  tasks:
+  - name: Send shutdown signal
+    command: /sbin/shutdown -h now
+    ignore_errors: yes
+
+  - name: Wait until boxes stop responding
+    wait_for:
+      host: "{{ ansible_ssh_host }}"
+      port: 22
+      state: stopped
+    connection: local

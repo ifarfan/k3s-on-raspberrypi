@@ -1,8 +1,8 @@
 ---
 #
-#  Configure RPi hosts
+#  Configure RPi hosts for the 1st time
 #
-- name: 1st time host configuration
+- name: Package install + refresh
   hosts: pis
   become: yes
   serial: 1
@@ -24,6 +24,13 @@
       pkg: "{{ apt_pkgs_to_install }}"
       state: present
 
+- name: General machine configuration tasks
+  hosts: pis
+  become: yes
+  vars_files:
+  - ../vars/main.yml
+
+  tasks:
   - name: Set global aliases
     copy:
       dest: /etc/profile.d/10-aliases.sh

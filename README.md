@@ -36,11 +36,11 @@ Below are listed my cluster's current configuration specs:
 
 | Model         | IP             | Proc   | CPU | Mem   | Disk |
 | ------------- | -------------- | ------ | --- | ----- | ---- |
-| RPI 3 Model B | 192.168.136.20 | armv7l |  4  | 1GB   | 32GB |
-| RPI 3 Model B | 192.168.136.21 | armv7l |  4  | 1GB   | 32GB |
-| RPI 3 Model B | 192.168.136.22 | armv7l |  4  | 1GB   | 32GB |
-| RPI 3 Model B | 192.168.136.23 | armv7l |  4  | 1GB   | 32GB |
-| RPI Model B+  | 192.168.136.24 | armv6l |  1  | 512MB |  8GB |
+| RPI 3 Model B | 192.168.136.30 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.31 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.32 | armv7l |  4  | 1GB   | 32GB |
+| RPI 3 Model B | 192.168.136.33 | armv7l |  4  | 1GB   | 32GB |
+| RPI Model B+  | 192.168.136.34 | armv6l |  1  | 512MB |  8GB |
 
 See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet/JiveServlet/previewBody/82195-102-3-346675/PiPoster_14Jun16.pdf)
 
@@ -55,7 +55,7 @@ See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet
 
 1. Ensure you can ssh to the RPi cluster, see sample `~/.ssh/config` excerpt below
    ```
-   Host 192.168.136.2*
+   Host 192.168.136.3*
         User pi
         IdentityFile ~/.ssh/ansible_rsa
         IdentitiesOnly yes
