@@ -46,7 +46,7 @@
   - name: Reboot RPis if cmdline.txt changed
     block:
 
-    - name: Rebooting boxes
+    - name: Rebooting boxes           # noqa 305
       shell: >
         sleep 5; shutdown -r now 'Rebooting to complete system upgrade'
       ignore_errors: true
@@ -117,7 +117,7 @@
   become: yes
 
   tasks:
-  - name: Install k3s agents
+  - name: Install k3s agents          # noqa 305
     shell: ~/install_k3s.sh
     args:
       creates: /var/lib/rancher/k3s

@@ -2,9 +2,9 @@
 
 
 ## Pre-requisites
-1. Download `Raspbian lite` from [here](https://downloads.raspberrypi.org/raspbian_lite/images/), look for most recent image –– unzip file
+1. Download [Raspbian lite](https://downloads.raspberrypi.org/raspbian_lite/images/), look for most recent OS image –– unzip file
 
-1. Use `balena Etcher` to write the Raspbian image to an SD card; to install it on a Mac:
+1. Use [balena's Etcher](https://www.balena.io/etcher/) to write the Raspbian image to an SD card; to install it on a Mac via [Homebrew](https://brew.sh/):
    ```
    $> brew cask install balenaetcher
    ```
@@ -18,7 +18,7 @@
 
 1. Append IP settings to end of `/boot/cmdline.txt` file to set static IP
    ``` ip=192.168.136.XX::192.168.136.1:255.255.255.0:eth0:false```
-   Refer to [this page](https://kr15h.github.io/RPi-Setup/) for an explanation + format
+   Refer to [this page](https://kr15h.github.io/RPi-Setup/) for an explanation + configuration string format
 
 1. Unmount + eject SD card, pop it in a Raspberry-pi and boot
 
@@ -82,4 +82,4 @@ Kubernetes is all the rage these days but it's bloated `as hell!` :scream:. I've
 
 Performance is great and what better way to get k8s in every IOT device in the world!
 
-Next stop... getting rid of the OS altogether and running bare `k3os` on these RPis. :smirk:
+Next stop... getting rid of the OS altogether and running bare [k3os](https://k3os.io/) on these RPis. :smirk:
