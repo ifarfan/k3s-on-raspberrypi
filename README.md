@@ -4,12 +4,12 @@
 ## Pre-requisites
 1. Download `Raspbian lite` from [here](https://downloads.raspberrypi.org/raspbian_lite/images/), look for most recent image –– unzip file
 
-1. Use `balena Etcher` to write Raspbian image to SD card, to install it on a Mac:
+1. Use `balena Etcher` to write the Raspbian image to an SD card; to install it on a Mac:
    ```
    $> brew cask install balenaetcher
    ```
 
-1. Mount SD card (i.e., eject + re-injet SD card)
+1. Mount SD card (i.e., eject + reinsert SD card)
 
 1. Create `/boot/ssh` file to allow SSH on RPi
    ```
@@ -22,6 +22,8 @@
 
 1. Unmount + eject SD card, pop it in a Raspberry-pi and boot
 
+1. Repeat the previous 4 steps on each SDs per RPi available
+
 1. On first boot, login as `pi` and use `raspberry` as default password
    ```
    $> ssh pi@192.168.136.23
@@ -30,7 +32,7 @@
 
 
 ## Cluster Specs
-My cluster's current configuration specs:
+Below are listed my cluster's current configuration specs:
 
 | Model         | IP             | Proc   | CPU | Mem   | Disk |
 | ------------- | -------------- | ------ | --- | ----- | ---- |
