@@ -87,3 +87,12 @@
   - name: Remove dependencies no longer needed
     apt:
       autoremove: yes
+
+  - name: Expand root filesystem
+    command: /usr/bin/raspi-config --expand-rootfs
+
+  - name: Disable swap
+    shell: |
+      dphys-swapfile swapoff
+      dphys-swapfile uninstall
+      systemctl disable dphys-swapfile

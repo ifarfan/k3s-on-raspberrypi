@@ -15,10 +15,10 @@ apt_pkgs_to_install:
 - curl
 - grc
 - htop
-# - iftop
-# - iotop
-# - iptraf
-# - lnav
+- iftop
+- iotop
+- iptraf
+- lnav
 - lsof
 - locate
 - multitail
@@ -77,7 +77,7 @@ aliases: |
   alias ld='colourify ld'
   alias less='less -FSRXc'
   alias lk='ll -Sr'
-  alias ll='ls -FGlAhp'
+  alias ll='ls -Flahp --group-directories-first'
   alias lm='la | "$PAGER"'
   alias ln=lni
   alias lr='ll -R'
