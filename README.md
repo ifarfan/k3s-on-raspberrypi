@@ -9,24 +9,31 @@
    $> brew cask install balenaetcher
    ```
 
-1. Mount SD card (i.e., eject + reinsert SD card)
+1. Launch `Etcher` and,
+   - Select the downloaded, unzipped `.img` file
+   - Select the SD card as the `target` (_you already plugged it into your Mac, right?_)
+   - Click on `Flash!`
+   - If prompted, enter your password to override the contents of the SD card
+   - Etcher will automatically `eject` the SD card
+
+1. Re-mount the SD card (i.e., eject + reinsert it)
 
 1. Create `/boot/ssh` file to allow SSH on RPi
    ```
    $> touch /Volumes/boot/ssh
    ```
 
-1. Append IP settings to end of `/boot/cmdline.txt` file to set static IP
+1. Append IP settings to the end of `/boot/cmdline.txt` to hard-set the static IP config
    ``` ip=192.168.136.XX::192.168.136.1:255.255.255.0:eth0:false```
    Refer to [this page](https://kr15h.github.io/RPi-Setup/) for an explanation + configuration string format
 
-1. Unmount + eject SD card, pop it in a Raspberry-pi and boot
+1. Unmount + eject SD card, pop it into a Raspberry-pi and boot
 
 1. Repeat the previous 4 steps on each SDs per RPi available
 
-1. On first boot, login as `pi` and use `raspberry` as default password
+1. On first boot, login as `pi` and use `raspberry` as the default password
    ```
-   $> ssh pi@192.168.136.23
+   $> ssh pi@192.168.136.33
    ```
 1. Rejoice + enjoy!
 
@@ -48,12 +55,16 @@ See: [Raspberry Pi model comparison](https://www.element14.com/community/servlet
 ## Installation + configuration via Ansible
 1. Check for correct IP settings under `hosts.yml`, note that the master is tagged as `k3s_master` and the agents as `k3s_agent`
 
-1. Reset `pi` user's password and add Ansible ssh key (you'll be prompted for default password and the ssh key under `vars/main.yml > ansible_ssh_key` will be added)
+1. Ensure you have `passlib` installed since we'll be resetting the RPi's passwords
+   ```
+   $> pip3 install passlib
+   ```
+1. Reset `pi` user's password and add the Ansible ssh key (you'll be prompted for the default password and the ssh key under `vars/main.yml > ansible_ssh_key` will be added)
    ```
    $> ansible-playbook playbooks/reset_pi_password.yml
    ```
 
-1. Ensure you can ssh to the RPi cluster, see sample `~/.ssh/config` excerpt below
+1. Ensure you can ssh to the RPi cluster, see `~/.ssh/config` sample excerpt below:
    ```
    Host 192.168.136.3*
         User pi

@@ -1,6 +1,6 @@
 ---
 #
-#  Configure RPi hosts for the 1st time
+#  Update apt packages + distro (one at the time)
 #
 - name: Package install + refresh
   hosts: pis
@@ -24,6 +24,9 @@
       pkg: "{{ apt_pkgs_to_install }}"
       state: present
 
+#
+#  Configure RPi hosts for the 1st time (in parallel)
+#
 - name: General machine configuration tasks
   hosts: pis
   become: yes
