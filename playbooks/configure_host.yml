@@ -102,10 +102,10 @@
         gpu_mem = 16
 
         #  Disable WiFi
-        dtoverlay=pi3-disable-wifi
+        dtoverlay = pi3-disable-wifi
 
         #  Disable Bluetooth
-        dtoverlay=pi3-disable-bt
+        dtoverlay = pi3-disable-bt
     register: boot_config
 
   - name: Remove packages off the cache
