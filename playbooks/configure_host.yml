@@ -34,6 +34,22 @@
   - ../vars/main.yml
 
   tasks:
+  - name: Set new MOTD
+    copy:
+      dest: /etc/update-motd.d/10-motd
+      content: "{{ motd }}"
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Remove old MOTD files
+    file:
+      name: "{{ item }}"
+      state: absent
+    loop:
+    - /etc/update-motd.d/10-uname
+    - /etc/motd
+
   - name: Set global aliases
     copy:
       dest: /etc/profile.d/10-aliases.sh

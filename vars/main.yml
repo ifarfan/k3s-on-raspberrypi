@@ -114,3 +114,74 @@ aliases: |
   alias type='type -a'
   # alias vi='vim -p'
   alias '~'='cd ~'
+
+motd: |
+  #!/bin/bash
+  #
+  #  ? See:
+  #  ? - https://gist.github.com/piksel/3023588
+  #  ? - https://github.com/gagle/raspberrypi-motd/blob/master/motd.sh
+  #
+  LOGO="\033[0;32m
+         .~~.   .~~.
+        '. \ ' ' / .'\033[0;31m
+        .~ .~~~..~.    \033[0m                   _                          _ \033[0;31m
+       : .~.'~'.~. :   \033[0m   ___ ___ ___ ___| |_ ___ ___ ___ _ _    ___|_|\033[0;31m
+      ~ (   ) (   ) ~  \033[0m  |  _| .'|_ -| . | . | -_|  _|  _| | |  | . | |\033[0;31m
+     ( : '~'.~.'~' : ) \033[0m  |_| |__,|___|  _|___|___|_| |_| |_  |  |  _|_|\033[0;31m
+      ~ .~ (   ) ~. ~  \033[0m              |_|                 |___|  |_|    \033[0;31m
+       (  : '~' :  )
+        '~ .~~~. ~'
+            '~'
+  \033[0m"
+  echo -e "${LOGO}"
+
+  ##  Show Distro Info
+  echo -e "\033[0;32m"
+  echo -e "  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––"
+  echo -e "    S Y S T E M    I N F O R M A T I O N"
+  echo -e "  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––"
+  echo -e "\033[0m"
+
+  ##  Get Machine Info
+  CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null)
+  [ "$CORES" -eq "0" ] && CORES=1
+  DISTRIB_DESCRIPTION=$(lsb_release -s -d)
+  MEM=$(free -m | awk 'NR==2 { printf "Total: %sMB, Used: %sMB, Free: %sMB",$2,$3,$4; }')
+  TEMPERATURE=$(/opt/vc/bin/vcgencmd measure_temp | cut -c "6-9")
+  DISK=$(df -h ~ | awk 'NR==2 { printf "Total: %sB, Used: %sB, Free: %sB",$2,$3,$4; }')
+  MY_IP=$(ip address list | grep 'inet' | grep 'eth0' | cut -d " " -f 6 | cut -d "/" -f 1 | tr '\n' ' ')
+
+  ##  Uptime
+  UPTIME_DAYS=$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 / 86400)
+  UPTIME_HOURS=$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 % 86400 / 3600)
+  UPTIME_MINUTES=$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 % 86400 % 3600 / 60)
+
+  echo -e "  Date/Time: \t$(date)"
+  echo -e "  Hostname: \t\033[0;32m$(hostname)\033[0m"
+  echo -e "  IP Address: \t\033[0;32m$MY_IP\033[0m"
+  echo -e "  OS Version: \t$DISTRIB_DESCRIPTION [$(uname -o) $(uname -r) $(uname -m)]"
+  echo ""
+  echo -e "  Core(s): \t\033[0;32m$CORES\033[0m"
+  echo -e "  Memory: \t$MEM"
+  echo -e "  Disk: \t$DISK"
+  echo -e "  Temperature: \t\033[0;32m$TEMPERATUREºC\033[0m"
+  echo -e "  Uptime: \t$UPTIME_DAYS days, $UPTIME_HOURS hours, $UPTIME_MINUTES minutes"
+
+  ## Show Warning
+  echo -e "\033[0;31m"
+  echo -e "  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––"
+  echo -e "    S E C U R I T Y    N O T I C E"
+  echo -e "  ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––"
+  echo -e "\033[0m"
+
+  echo "  This computer system is for authorized users only. All activity is logged"
+  echo "  and regulary checked by systems personnel. Individuals using this system"
+  echo "  without authority, or in excess of their authority, are subject to having"
+  echo "  all their services revoked. Any illegal services ran by user or attempts"
+  echo "  to take down this server or its services will be reported to local law "
+  echo "  enforcement, and said user will be punished to the full extent of the law."
+
+  echo
+  echo "  Anyone using this system consents to these terms."
+  echo
