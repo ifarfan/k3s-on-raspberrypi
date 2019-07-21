@@ -77,27 +77,36 @@
   - name: Set timezone
     timezone:
       name: UTC
+    register: timezone_update
 
   - name: Set hostname
     hostname:
       name: "{{ inventory_hostname }}"
+    register: hostname_update
 
   - name: Set hostname in /etc/hosts
     blockinfile:
       path: /etc/hosts
       insertbefore: EOF
-      marker: "#-- {mark} ANSIBLE MANAGED HOSTNAME --"
+      marker: "#-- {mark} ANSIBLE MANAGED --"
       content: |
         127.0.0.1 {{ inventory_hostname }}
 
-  - name: Set global prompt
+  - name: Set global RPi configs
     blockinfile:
       path: /boot/config.txt
       insertbefore: EOF
-      marker: "#-- {mark} ANSIBLE MANAGED HOSTNAME --"
+      marker: "#-- {mark} ANSIBLE MANAGED --"
       content: |
         #  Set GPU memory to minimum possible
         gpu_mem = 16
+
+        #  Disable WiFi
+        dtoverlay=pi3-disable-wifi
+
+        #  Disable Bluetooth
+        dtoverlay=pi3-disable-bt
+    register: boot_config
 
   - name: Remove packages off the cache
     apt:
@@ -115,3 +124,32 @@
       dphys-swapfile swapoff
       dphys-swapfile uninstall
       systemctl disable dphys-swapfile
+
+  - name: Set static IP
+    blockinfile:
+      path: /etc/dhcpcd.conf
+      insertbefore: EOF
+      marker: "#-- {mark} ANSIBLE MANAGED --"
+      content: |
+        interface eth0
+
+        static ip_address={{ ansible_host }}/24
+        static routers={{ router_ip }}
+        static domain_name_servers={{ dhcp_ip }}
+    register: static_ip
+
+  - name: Reboot RPis if server changes occurred
+    block:
+
+    - name: Rebooting boxes
+      reboot:
+        reboot_timeout: 300
+
+    - name: Waiting for boxes to come back
+      wait_for_connection:
+        connect_timeout: 20
+        sleep: 5
+        delay: 5
+        timeout: 300
+
+    when: timezone_update is changed or hostname_update is changed or static_ip is changed or boot_config is changed
